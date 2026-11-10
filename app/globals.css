@@ -1,0 +1,978 @@
+@import 'tailwindcss';
+
+/* ---------- Design tokens (from Akrobat-v3.html) ---------- */
+:root {
+  --bg: #f6f8fc;
+  --surf: #ffffff;
+  --ink: #0b1f45; /* navy, taken from the Sign In button */
+  --mute: #5b6577;
+  --line: #e3e7ee;
+}
+
+@theme inline {
+  --color-bg: var(--bg);
+  --color-surf: var(--surf);
+  --color-ink: var(--ink);
+  --color-mute: var(--mute);
+  --color-line: var(--line);
+  --font-sans: var(--font-inter), 'Segoe UI', system-ui, Arial, sans-serif;
+}
+@theme {
+  --color-brand: #f7861e;
+  --color-brand-dark: #e8650a;
+  --color-navy: #0b1f45;
+  --color-navy-2: #14306b;
+  --ease-slow: cubic-bezier(0.22, 0.8, 0.25, 1);
+}
+
+html {
+  scroll-behavior: smooth;
+}
+body {
+  background: var(--bg);
+  color: var(--ink);
+  font-family: var(--font-sans);
+  overflow-x: hidden;
+}
+
+/* ---------- Sidebar drawer ---------- */
+.drawer {
+  /* navy drawer: re-point the tokens so every child turns light-on-dark */
+  --ink: #ffffff;
+  --mute: rgba(255, 255, 255, 0.7);
+  --line: rgba(255, 255, 255, 0.18);
+  transition:
+    transform 1.1s var(--ease-slow),
+    width 0.95s var(--ease-slow);
+}
+
+/* Level 1 menu rows: slide in one after another when the drawer opens */
+.menu-item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 14px;
+  width: 100%;
+  padding: 14px 0;
+  border: 0;
+  border-bottom: 1px solid var(--line);
+  background: none;
+  text-align: left;
+  cursor: pointer;
+  font-size: 17px;
+  font-weight: 500;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  white-space: nowrap;
+  color: var(--ink);
+  opacity: 0;
+  transform: translateX(60px);
+  transition:
+    opacity 0.4s,
+    transform 0.4s,
+    color 0.3s,
+    padding 0.3s;
+}
+.drawer[data-open='true'] .menu-item {
+  opacity: 1;
+  transform: none;
+  transition:
+    opacity 1s var(--d),
+    transform 1.1s var(--d) var(--ease-slow),
+    color 0.3s,
+    padding 0.3s;
+}
+.menu-item:hover {
+  color: var(--color-brand);
+  padding-left: 10px;
+}
+.menu-item[data-active='true'] {
+  color: var(--color-brand);
+  padding-left: 12px;
+  box-shadow: inset 3px 0 0 var(--color-brand);
+}
+.menu-item i {
+  font-style: normal;
+  font-size: 17px;
+  transition: transform 0.5s var(--ease-slow);
+}
+.menu-item[data-active='true'] i {
+  transform: translateX(6px);
+}
+@media (max-width: 700px) {
+  .menu-item {
+    font-size: 15px;
+  }
+}
+
+/* Level 2 / 3 rows */
+.sub-item {
+  opacity: 0;
+  transform: translateX(90px);
+  animation: sub-in 1s var(--d) var(--ease-slow) forwards;
+}
+@keyframes sub-in {
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+.sub-link {
+  display: flex;
+  align-items: center;
+  width: 100%;
+  padding: 11px 0;
+  border: 0;
+  background: none;
+  text-align: left;
+  cursor: pointer;
+  font-size: 16px;
+  line-height: 1.35;
+  color: var(--ink);
+  transition:
+    color 0.25s,
+    padding 0.25s;
+}
+.sub-link:hover {
+  color: var(--color-brand);
+  padding-left: 8px;
+}
+.view-all {
+  display: inline-block;
+  margin-top: 10px;
+  padding-bottom: 4px;
+  border-bottom: 2px solid var(--color-brand);
+  font-weight: 600;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .drawer,
+  .menu-item,
+  .sub-item {
+    transition-duration: 0.01s !important;
+    animation-duration: 0.01s !important;
+    animation-delay: 0s !important;
+  }
+}
+
+/* ---------- Hanging logo: one gentle swing on load ---------- */
+.logo-swing {
+  transform-origin: 50% 0;
+  animation: logo-swing 2.4s ease-out 0.4s 1 both;
+}
+@keyframes logo-swing {
+  0% {
+    transform: rotate(0deg);
+  }
+  15% {
+    transform: rotate(3.2deg);
+  }
+  35% {
+    transform: rotate(-2.4deg);
+  }
+  55% {
+    transform: rotate(1.4deg);
+  }
+  75% {
+    transform: rotate(-0.7deg);
+  }
+  100% {
+    transform: rotate(0deg);
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .logo-swing {
+    animation: none;
+  }
+}
+
+/* ---------- Hero skyline: towers shoot up from the bottom ---------- */
+.bld {
+  transform: translateY(105%);
+  animation: bld-rise 0.85s cubic-bezier(0.16, 1, 0.3, 1) var(--d, 0s) forwards;
+}
+.bld-win {
+  opacity: 0;
+  animation: bld-fade 0.5s ease-out calc(var(--d, 0s) + 0.5s) forwards;
+}
+.crane-hook {
+  transform-origin: 96px 8px;
+  animation: hook-sway 3s ease-in-out 1.6s infinite alternate;
+}
+@keyframes bld-rise {
+  to {
+    transform: translateY(0);
+  }
+}
+@keyframes bld-fade {
+  to {
+    opacity: 1;
+  }
+}
+@keyframes hook-sway {
+  from {
+    transform: rotate(-4deg);
+  }
+  to {
+    transform: rotate(4deg);
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .bld {
+    transform: none;
+    animation: none;
+  }
+  .bld-win {
+    opacity: 1;
+    animation: none;
+  }
+  .crane-hook {
+    animation: none;
+  }
+}
+
+/* ---------- Skyline (SVG towers) ---------- */
+.sk-rise {
+  transform-box: fill-box;
+  transform: translateY(103%);
+  animation: bld-rise 0.85s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+.sk-pop {
+  opacity: 0;
+  animation: bld-fade 0.5s ease-out forwards;
+}
+.sk-blink {
+  animation: sk-blink 1.4s ease-in-out 1.2s infinite;
+}
+@keyframes sk-blink {
+  50% {
+    opacity: 0.15;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .sk-rise {
+    transform: none;
+    animation: none;
+  }
+  .sk-pop {
+    opacity: 1;
+    animation: none;
+  }
+  .sk-blink {
+    animation: none;
+  }
+}
+
+/* Equipment attaching to the buildings, one piece at a time, in slow motion */
+.sk-attach {
+  opacity: 0;
+  animation: sk-attach 2.4s cubic-bezier(0.22, 0.7, 0.2, 1) both;
+}
+.sk-from-top {
+  --ax: 0px;
+  --ay: -90px;
+}
+.sk-from-right {
+  --ax: 90px;
+  --ay: -30px;
+}
+.sk-from-grow {
+  transform-box: fill-box;
+  transform-origin: 50% 100%;
+  animation-name: sk-grow;
+}
+/* A ladder arrives fast from up-right, hits the wall a touch too deep, then
+   settles back into place. */
+.sk-from-ladder {
+  transform-box: fill-box;
+  transform-origin: 50% 100%;
+  animation: sk-ladder 0.85s cubic-bezier(0.3, 0.8, 0.3, 1) both;
+}
+@keyframes sk-ladder {
+  from {
+    opacity: 0;
+    transform: translate(130px, -70px) rotate(9deg);
+  }
+  14% {
+    opacity: 1;
+  }
+  62% {
+    opacity: 1;
+    transform: translate(-4px, 4px) rotate(-0.8deg);
+  }
+  80% {
+    transform: translate(1.5px, -1.5px) rotate(0.3deg);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+.sk-thud {
+  transform-box: fill-box;
+  transform-origin: 50% 50%;
+  opacity: 0;
+  animation: sk-thud 0.7s ease-out both;
+}
+@keyframes sk-thud {
+  from {
+    opacity: 0.9;
+    transform: scale(0.4);
+  }
+  to {
+    opacity: 0;
+    transform: scale(2.4);
+  }
+}
+.sk-twinkle {
+  animation: sk-twinkle 5s ease-in-out 3s infinite;
+}
+.sk-twinkle-b {
+  animation-duration: 7s;
+  animation-delay: 4.5s;
+}
+@keyframes sk-twinkle {
+  0%,
+  100% {
+    opacity: 1;
+  }
+  45% {
+    opacity: 0.35;
+  }
+  60% {
+    opacity: 1;
+  }
+}
+.sk-smoke {
+  transform-box: fill-box;
+  transform-origin: 50% 50%;
+  opacity: 0;
+  animation: sk-smoke 3.4s ease-out infinite;
+}
+@keyframes sk-smoke {
+  from {
+    opacity: 0.75;
+    transform: translate(0, 0) scale(0.5);
+  }
+  to {
+    opacity: 0;
+    transform: translate(8px, -30px) scale(1.9);
+  }
+}
+.sk-cloud {
+  animation: sk-cloud 36s ease-in-out infinite alternate;
+}
+.sk-cloud-b {
+  animation-duration: 48s;
+  animation-direction: alternate-reverse;
+}
+@keyframes sk-cloud {
+  to {
+    transform: translateX(60px);
+  }
+}
+@keyframes sk-attach {
+  from {
+    opacity: 0;
+    transform: translate(var(--ax), var(--ay));
+  }
+  35% {
+    opacity: 1;
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+@keyframes sk-grow {
+  from {
+    opacity: 0;
+    transform: scaleY(0);
+  }
+  25% {
+    opacity: 1;
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .sk-attach,
+  .sk-from-ladder {
+    opacity: 1;
+    animation: none;
+  }
+  .sk-thud,
+  .sk-smoke,
+  .sk-twinkle,
+  .sk-cloud {
+    animation: none;
+  }
+}
+
+/* ---------- How we work: endlessly turning ring ---------- */
+.hww {
+  --s: min(86vw, 480px);
+  --r: calc(var(--s) * 0.36);
+  --n: 84px;
+  position: relative;
+  flex: none;
+  width: var(--s);
+  height: var(--s);
+}
+@keyframes ak-spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+.hww-spin-slow {
+  animation: ak-spin 50s linear infinite;
+}
+.hww-spin-fast {
+  animation: ak-spin 8s linear infinite;
+}
+@keyframes hww-in {
+  from {
+    opacity: 0;
+    transform: translateY(14px) scale(0.96);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+.hww-in {
+  animation: hww-in 0.8s var(--ease-slow) both;
+}
+@keyframes hww-fill {
+  from {
+    transform: scaleX(0);
+  }
+  to {
+    transform: scaleX(1);
+  }
+}
+.hww-fill {
+  animation: hww-fill linear forwards;
+}
+.hww[data-paused='true'] .hww-fill {
+  animation-play-state: paused;
+}
+@keyframes hww-pulse {
+  0% {
+    box-shadow: 0 0 0 0 rgba(247, 134, 30, 0.55);
+  }
+  100% {
+    box-shadow: 0 0 0 24px rgba(247, 134, 30, 0);
+  }
+}
+.hww-pulse {
+  animation: hww-pulse 1.8s ease-out infinite;
+}
+@media (prefers-reduced-motion: reduce) {
+  .hww-spin-slow,
+  .hww-spin-fast,
+  .hww-pulse,
+  .hww-fill {
+    animation: none;
+  }
+}
+
+/* ---------- Product pages ---------- */
+/* reveal helpers: an <InView> wrapper sets data-in="true" once on screen */
+.rv {
+  opacity: 0;
+  transform: translateY(44px);
+  transition:
+    opacity 0.9s var(--ease-slow) var(--rd, 0s),
+    transform 1.1s var(--ease-slow) var(--rd, 0s);
+}
+.rv-l {
+  transform: translateX(-70px);
+}
+.rv-r {
+  transform: translateX(70px);
+}
+[data-in='true'] .rv,
+.rv[data-in='true'] {
+  opacity: 1;
+  transform: none;
+}
+.draw {
+  transform: scaleX(0);
+  transform-origin: left;
+  transition: transform 1.3s var(--ease-slow) var(--rd, 0s);
+}
+[data-in='true'] .draw,
+.draw[data-in='true'] {
+  transform: scaleX(1);
+}
+
+/* images appear by a cut-corner wipe */
+.clip-l {
+  clip-path: polygon(0 0, 0 0, 0 90%, 0 100%, 0 100%);
+  transition: clip-path 1.4s var(--ease-slow) var(--rd, 0s);
+}
+[data-in='true'] .clip-l,
+.clip-l[data-in='true'] {
+  clip-path: polygon(0 0, 100% 0, 100% 90%, 90% 100%, 0 100%);
+}
+.clip-r {
+  clip-path: polygon(100% 0, 100% 0, 100% 100%, 100% 100%, 100% 90%);
+  transition: clip-path 1.4s var(--ease-slow) var(--rd, 0s);
+}
+[data-in='true'] .clip-r,
+.clip-r[data-in='true'] {
+  clip-path: polygon(0 0, 100% 0, 100% 100%, 10% 100%, 0 90%);
+}
+
+/* headline words rise out of a mask */
+.mask {
+  display: inline-block;
+  overflow: hidden;
+  vertical-align: bottom;
+  padding-bottom: 0.22em;
+  margin-bottom: -0.22em;
+}
+.mask > span {
+  display: inline-block;
+  transform: translateY(115%);
+  animation: ak-rise 1.1s var(--ease-slow) var(--rd, 0s) forwards;
+}
+@keyframes ak-rise {
+  to {
+    transform: none;
+  }
+}
+
+.outline-text {
+  color: transparent;
+  -webkit-text-stroke: 2px var(--oc, #fff);
+}
+.slot {
+  background:
+    repeating-linear-gradient(
+      135deg,
+      rgba(20, 48, 107, 0.06) 0 12px,
+      rgba(20, 48, 107, 0.12) 12px 24px
+    ),
+    #e9eef7;
+}
+.slot-dark {
+  background:
+    repeating-linear-gradient(
+      135deg,
+      rgba(255, 255, 255, 0.04) 0 12px,
+      rgba(255, 255, 255, 0.09) 12px 24px
+    ),
+    #11285a;
+}
+
+/* endless text band */
+.marquee {
+  display: flex;
+  width: max-content;
+  animation: ak-marquee 38s linear infinite;
+}
+.marquee-rev {
+  animation-direction: reverse;
+}
+@keyframes ak-marquee {
+  to {
+    transform: translateX(-50%);
+  }
+}
+
+/* the drop-and-catch loop in the hero */
+@keyframes fa-fall {
+  0%,
+  30% {
+    transform: translateY(0);
+    animation-timing-function: cubic-bezier(0.55, 0, 1, 0.45);
+  }
+  38% {
+    transform: translateY(215px);
+    animation-timing-function: ease-out;
+  }
+  46% {
+    transform: translateY(176px);
+    animation-timing-function: ease-in-out;
+  }
+  54% {
+    transform: translateY(210px);
+    animation-timing-function: ease-in-out;
+  }
+  62% {
+    transform: translateY(194px);
+    animation-timing-function: ease-in-out;
+  }
+  72%,
+  88% {
+    transform: translateY(200px);
+    animation-timing-function: ease-in-out;
+  }
+  100% {
+    transform: translateY(0);
+  }
+}
+/* the cable is 60 units long at rest, so scaleY = 1 + drop / 60 */
+@keyframes fa-cable {
+  0%,
+  30% {
+    transform: scaleY(1);
+    animation-timing-function: cubic-bezier(0.55, 0, 1, 0.45);
+  }
+  38% {
+    transform: scaleY(4.58);
+    animation-timing-function: ease-out;
+  }
+  46% {
+    transform: scaleY(3.93);
+    animation-timing-function: ease-in-out;
+  }
+  54% {
+    transform: scaleY(4.5);
+    animation-timing-function: ease-in-out;
+  }
+  62% {
+    transform: scaleY(4.23);
+    animation-timing-function: ease-in-out;
+  }
+  72%,
+  88% {
+    transform: scaleY(4.33);
+    animation-timing-function: ease-in-out;
+  }
+  100% {
+    transform: scaleY(1);
+  }
+}
+@keyframes fa-label {
+  0%,
+  38% {
+    opacity: 0;
+  }
+  46%,
+  86% {
+    opacity: 1;
+  }
+  96%,
+  100% {
+    opacity: 0;
+  }
+}
+.fa-fig {
+  animation: fa-fall 7s infinite;
+}
+.fa-cable {
+  transform-origin: 50% 0;
+  transform-box: fill-box;
+  animation: fa-cable 7s infinite;
+}
+.fa-label {
+  animation: fa-label 7s infinite;
+}
+@keyframes ak-bob {
+  50% {
+    transform: translateY(-12px);
+  }
+}
+.bob {
+  animation: ak-bob 5s ease-in-out infinite;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .rv,
+  .draw {
+    transition: none;
+    opacity: 1;
+    transform: none;
+  }
+  .clip-l {
+    transition: none;
+    clip-path: polygon(0 0, 100% 0, 100% 90%, 90% 100%, 0 100%);
+  }
+  .clip-r {
+    transition: none;
+    clip-path: polygon(0 0, 100% 0, 100% 100%, 10% 100%, 0 90%);
+  }
+  .mask > span {
+    animation: none;
+    transform: none;
+  }
+  .marquee,
+  .fa-fig,
+  .fa-cable,
+  .fa-label,
+  .bob {
+    animation: none;
+  }
+  .fa-label {
+    opacity: 1;
+  }
+}
+
+/* ---------- Rooftop fall-arrest story (RooftopScene) ---------- */
+.fs-man,
+.fs-lan,
+.fs-trol {
+  transform-origin: 0 0;
+  transform: translate(100px, 232px);
+}
+.fs-lan {
+  transform-origin: 0 140px;
+  transform: translateX(100px);
+}
+.fs-trol {
+  transform: translateX(100px);
+  transform-origin: 0 140px;
+}
+.fs-man {
+  animation: fs-man 8s linear forwards;
+}
+.fs-lan {
+  animation: fs-lan 8s linear forwards;
+}
+.fs-trol {
+  animation: fs-trol 8s linear forwards;
+}
+@keyframes fs-man {
+  0% {
+    transform: translate(100px, 232px) rotate(0);
+    animation-timing-function: linear;
+  }
+  40% {
+    transform: translate(470px, 232px) rotate(0);
+    animation-timing-function: ease-in-out;
+  }
+  46% {
+    transform: translate(522px, 234px) rotate(6deg);
+    animation-timing-function: cubic-bezier(0.5, 0, 1, 0.7);
+  }
+  52% {
+    transform: translate(534px, 302px) rotate(22deg);
+    animation-timing-function: cubic-bezier(0.2, 0.6, 0.4, 1);
+  }
+  56% {
+    transform: translate(538px, 372px) rotate(10deg);
+    animation-timing-function: ease-in-out;
+  }
+  60% {
+    transform: translate(537px, 347px) rotate(-4deg);
+    animation-timing-function: ease-in-out;
+  }
+  67% {
+    transform: translate(535px, 354px) rotate(3deg);
+    animation-timing-function: ease-in-out;
+  }
+  100% {
+    transform: translate(535px, 352px) rotate(0);
+  }
+}
+@keyframes fs-lan {
+  0%,
+  40% {
+    transform: translateX(100px) scaleY(1);
+  }
+  46% {
+    transform: translateX(522px) scaleY(1.02);
+  }
+  52% {
+    transform: translateX(534px) scaleY(1.76);
+  }
+  56% {
+    transform: translateX(538px) scaleY(2.52);
+  }
+  60% {
+    transform: translateX(537px) scaleY(2.25);
+  }
+  67%,
+  100% {
+    transform: translateX(535px) scaleY(2.33);
+  }
+}
+@keyframes fs-trol {
+  0% {
+    transform: translateX(100px);
+  }
+  40% {
+    transform: translateX(470px);
+  }
+  46% {
+    transform: translateX(522px);
+  }
+  52% {
+    transform: translateX(534px);
+  }
+  100% {
+    transform: translateX(535px);
+  }
+}
+.fs-legA {
+  animation:
+    fs-hip 0.8s ease-in-out 4 alternate,
+    fs-hang-a 4.5s ease-out 3.2s forwards;
+}
+.fs-legB {
+  animation:
+    fs-hip 0.8s ease-in-out -0.8s 5 alternate,
+    fs-hang-b 4.5s ease-out 3.2s forwards;
+}
+.fs-armA {
+  animation:
+    fs-hip 0.8s ease-in-out -0.8s 5 alternate,
+    fs-arms 4.5s ease-out 3.2s forwards;
+}
+.fs-armB {
+  animation:
+    fs-hip 0.8s ease-in-out 4 alternate,
+    fs-arms 4.5s ease-out 3.2s forwards;
+}
+.fs-kneeA {
+  animation: fs-knee 0.8s ease-in-out 4 alternate;
+}
+.fs-kneeB {
+  animation: fs-knee 0.8s ease-in-out -0.8s 5 alternate;
+}
+.fs-elbow {
+  transform: rotate(-28deg);
+}
+.fs-bob {
+  animation: fs-bob 0.4s ease-in-out 8 alternate;
+}
+@keyframes fs-hip {
+  from {
+    transform: rotate(-26deg);
+  }
+  to {
+    transform: rotate(26deg);
+  }
+}
+@keyframes fs-knee {
+  from {
+    transform: rotate(2deg);
+  }
+  to {
+    transform: rotate(48deg);
+  }
+}
+@keyframes fs-bob {
+  to {
+    transform: translateY(-2.5px);
+  }
+}
+@keyframes fs-hang-a {
+  0% {
+    transform: rotate(-26deg);
+  }
+  20% {
+    transform: rotate(-50deg);
+  }
+  45% {
+    transform: rotate(22deg);
+  }
+  100% {
+    transform: rotate(6deg);
+  }
+}
+@keyframes fs-hang-b {
+  0% {
+    transform: rotate(26deg);
+  }
+  20% {
+    transform: rotate(40deg);
+  }
+  45% {
+    transform: rotate(-14deg);
+  }
+  100% {
+    transform: rotate(-4deg);
+  }
+}
+@keyframes fs-arms {
+  0% {
+    transform: rotate(0);
+  }
+  20% {
+    transform: rotate(-150deg);
+  }
+  50% {
+    transform: rotate(-40deg);
+  }
+  100% {
+    transform: rotate(-12deg);
+  }
+}
+.fs-badge {
+  opacity: 0;
+  animation: fs-pop 0.6s ease-out 4.8s forwards;
+}
+@keyframes fs-pop {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .fs *,
+  .fs-badge {
+    animation-duration: 0.01s !important;
+    animation-delay: 0s !important;
+  }
+}
+
+/* ---------- Product types: ring of cards ---------- */
+.type-ring {
+  --w: clamp(250px, 32vw, 430px);
+}
+.type-stage {
+  position: relative;
+  height: calc(var(--w) * 1.28);
+  perspective: 1500px;
+  overflow: hidden;
+  touch-action: pan-y;
+  user-select: none;
+  cursor: grab;
+}
+.type-stage:active {
+  cursor: grabbing;
+}
+.type-card {
+  position: absolute;
+  top: 2%;
+  left: 50%;
+  display: block;
+  width: var(--w);
+  height: calc(var(--w) * 1.2);
+  margin-left: calc(var(--w) / -2);
+  overflow: hidden;
+  border-radius: 28px;
+  background: #0b1f45;
+  box-shadow: 0 24px 50px -22px rgba(11, 31, 69, 0.55);
+  transition:
+    transform 0.85s cubic-bezier(0.22, 0.8, 0.2, 1),
+    opacity 0.6s ease,
+    filter 0.6s ease;
+  will-change: transform;
+}
+.type-timer {
+  animation: type-timer linear forwards;
+}
+@keyframes type-timer {
+  from {
+    transform: scaleX(0);
+  }
+  to {
+    transform: scaleX(1);
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .type-card {
+    transition: none;
+  }
+}
