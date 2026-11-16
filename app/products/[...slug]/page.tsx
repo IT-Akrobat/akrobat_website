@@ -6,6 +6,7 @@ import ImageSlot from '@/app/components/products/ImageSlot';
 import InView from '@/app/components/products/InView';
 import SrlCatalogue from '@/app/components/products/SrlCatalogue';
 import TypeCarousel from '@/app/components/products/TypeCarousel';
+import { harnessGroups, harnessHref } from '@/app/lib/harness-data';
 import { mobileGroups, mobileTabByHref } from '@/app/lib/mobile-data';
 import { company, type NavGroup } from '@/app/lib/nav-data';
 import {
@@ -18,6 +19,10 @@ import {
   stripParens,
 } from '@/app/lib/product-data';
 import { srlHref } from '@/app/lib/srl-data';
+import {
+  tempLifelineGroups,
+  tempLifelineHref,
+} from '@/app/lib/templifeline-data';
 
 type Props = { params: Promise<{ slug: string[] }> };
 
@@ -240,7 +245,7 @@ function CategoryPage({ group }: { group: NavGroup }) {
           </h2>
 
           <TypeCarousel
-            seconds={40}
+            seconds={5}
             items={group.children.map((c, i) => ({
               href: c.href,
               title: stripParens(c.label),
@@ -377,6 +382,24 @@ function ItemPage({
       </section>
 
       {item.href === srlHref && <SrlCatalogue />}
+      {item.href === harnessHref && (
+        <SrlCatalogue
+          groups={harnessGroups}
+          imageBase="/products/harness"
+          eyebrow="EN 361"
+          heading={['Support that', 'holds you.']}
+          quoteLabel="Harness"
+        />
+      )}
+      {item.href === tempLifelineHref && (
+        <SrlCatalogue
+          groups={tempLifelineGroups}
+          imageBase="/products/templifeline"
+          eyebrow="EN 353-2"
+          heading={['Line that', 'goes up fast.']}
+          quoteLabel="Temporary Lifeline"
+        />
+      )}
       {mobileTabByHref[item.href] && (
         <SrlCatalogue
           groups={mobileGroups}

@@ -1,3 +1,4 @@
+import Image from 'next/image';
 import Link from 'next/link';
 import { Suspense } from 'react';
 
@@ -10,6 +11,28 @@ const companyLinks = [
   { label: 'Projects', href: '/projects' },
   { label: 'Promotions & News', href: '/promotions-news' },
   { label: 'Contact Us', href: '/contact-us' },
+];
+
+const certs = [
+  { src: '/pdf/bizsafe.jpg', alt: 'bizSAFE Star', w: 700, h: 496 },
+  {
+    src: '/pdf/iso9001.jpg',
+    alt: 'ISO 9001 Quality Management',
+    w: 600,
+    h: 600,
+  },
+  {
+    src: '/pdf/iso45001.jpg',
+    alt: 'ISO 45001 Health and Safety Management',
+    w: 600,
+    h: 600,
+  },
+  {
+    src: '/pdf/smf.jpg',
+    alt: 'Singapore Manufacturing Federation',
+    w: 206,
+    h: 242,
+  },
 ];
 
 const colTitle =
@@ -112,11 +135,57 @@ export default function Footer() {
           <p>
             © <Year /> {company.name}. All rights reserved.
           </p>
-          <a href="#" className="hover:text-white">
-            Back to top ↑
-          </a>
+          <div className="flex flex-wrap items-center justify-center gap-x-6 gap-y-4">
+            <p className="text-lg text-white/75">Our Accreditation:</p>
+            <ul
+              aria-label="Certifications and memberships"
+              className="flex items-center gap-3"
+            >
+              {certs.map((c) => (
+                <li key={c.src} className="rounded-md bg-white p-1">
+                  <Image
+                    src={c.src}
+                    alt={c.alt}
+                    width={c.w}
+                    height={c.h}
+                    className="h-12 w-auto"
+                  />
+                </li>
+              ))}
+            </ul>
+          </div>
         </div>
       </div>
+
+      {/* Floating back-to-top button. Fades in after the page is scrolled
+          (browsers without scroll-driven animations just always show it). */}
+      <a
+        href="#"
+        aria-label="Back to top"
+        className="back-to-top bg-brand hover:bg-brand-dark focus-visible:outline-navy fixed right-5 bottom-5 z-40 grid size-12 place-items-center rounded-full text-white shadow-[0_8px_24px_rgba(11,31,69,.3)] transition-colors focus-visible:outline-2 focus-visible:outline-offset-2 md:right-8 md:bottom-8"
+      >
+        <svg
+          viewBox="0 0 24 24"
+          className="size-6 fill-none stroke-current stroke-[2.5] [stroke-linecap:round] [stroke-linejoin:round]"
+          aria-hidden
+        >
+          <path d="M12 19V5M5 12l7-7 7 7" />
+        </svg>
+      </a>
+      <style>{`
+        @supports (animation-timeline: scroll()) {
+          .back-to-top {
+            opacity: 0;
+            pointer-events: none;
+            animation: back-to-top-in linear both;
+            animation-timeline: scroll(root);
+            animation-range: 300px 500px;
+          }
+          @keyframes back-to-top-in {
+            to { opacity: 1; pointer-events: auto; }
+          }
+        }
+      `}</style>
     </footer>
   );
 }

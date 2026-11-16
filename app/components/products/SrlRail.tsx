@@ -297,6 +297,16 @@ export default function SrlRail({
                 >
                   Ask for a quote →
                 </Link>
+                {open.brochure && (
+                  <a
+                    href={open.brochure}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="hover:text-navy rounded-full border border-white/35 px-6 py-3.5 text-[15px] font-bold transition-colors hover:bg-white"
+                  >
+                    Download brochure ↓
+                  </a>
+                )}
                 <button
                   type="button"
                   onClick={() => setOpen(null)}

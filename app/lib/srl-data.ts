@@ -13,6 +13,7 @@ export type SrlModel = {
   model: string; // e.g. "AK CR30"
   title: string; // card heading
   specs: string[]; // short list shown on the rail card
+  brochure?: string; // optional PDF link, shown as a button in the popup
 };
 
 export type SrlGroup = {

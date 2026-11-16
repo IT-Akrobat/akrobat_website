@@ -976,3 +976,89 @@ body {
     transition: none;
   }
 }
+
+/* ---------- About hero: a worker gliding along a lifeline ---------- */
+@keyframes ab-glide {
+  from {
+    transform: translateX(0);
+  }
+  to {
+    transform: translateX(150px);
+  }
+}
+.ab-glide {
+  animation: ab-glide 6s ease-in-out infinite alternate;
+}
+@media (prefers-reduced-motion: reduce) {
+  .ab-glide {
+    animation: none;
+  }
+}
+
+/* Home hero slideshow: the incoming photo starts zoomed-in, tilted and blurred,
+   then zooms out and settles straight and sharp in place */
+.hs-zoom {
+  transform-origin: 60% 50%;
+  will-change: transform, filter;
+  animation: hs-zoom 3s cubic-bezier(0.16, 0.8, 0.2, 1) both;
+}
+@keyframes hs-zoom {
+  from {
+    transform: scale(1.7) rotate(-5deg);
+    filter: blur(14px);
+  }
+  to {
+    transform: scale(1) rotate(0deg);
+    filter: blur(0);
+  }
+}
+/* phones: skip the blur (keeps it smooth on low-end devices) */
+@media (max-width: 767px) {
+  .hs-zoom {
+    animation-name: hs-zoom-m;
+  }
+  @keyframes hs-zoom-m {
+    from {
+      transform: scale(1.5) rotate(-4deg);
+    }
+    to {
+      transform: scale(1) rotate(0deg);
+    }
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .hs-zoom {
+    animation: none;
+  }
+}
+
+/* Home hero: wipe to the next photo, and trolley travelling along the cable */
+.hs-wipe {
+  animation: hs-wipe 1.3s cubic-bezier(0.7, 0, 0.2, 1) both;
+}
+@keyframes hs-wipe {
+  from {
+    clip-path: inset(0 0 0 100%);
+  }
+  to {
+    clip-path: inset(0 0 0 0);
+  }
+}
+.hs-fill {
+  animation-name: hs-fill;
+  animation-timing-function: linear;
+  animation-fill-mode: both;
+}
+@keyframes hs-fill {
+  from {
+    width: 0;
+  }
+  to {
+    width: 100%;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .hs-wipe {
+    animation: none;
+  }
+}

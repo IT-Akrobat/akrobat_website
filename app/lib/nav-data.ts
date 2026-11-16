@@ -127,6 +127,7 @@ export const solutions: NavLeaf[] = [
     label: 'Building Maintenance Unit',
     href: '/engineering-solutions/building-maintenance-unit',
   },
+  { label: 'Safety Net', href: '/engineering-solutions/safety-net' },
   { label: 'Rope Access', href: '/engineering-solutions/rope-access-works' },
   {
     label: 'Roof Safety Anchor Points',

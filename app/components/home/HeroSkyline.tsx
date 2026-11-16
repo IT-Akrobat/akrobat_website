@@ -1184,16 +1184,20 @@ const brick: Tower = {
   band: '#4a2a1e',
 };
 
-export default function HeroSkyline() {
+const DEFAULT_POS =
+  'absolute top-28 right-0 bottom-0 flex w-[62%] items-end justify-end max-md:w-full max-md:opacity-35';
+
+export default function HeroSkyline({
+  className = DEFAULT_POS,
+}: {
+  className?: string;
+}) {
   const t1 = tier(596, 394, 90, 60);
   const t2 = tier(596, 394 - 90 - 2 * S * 9, 80, 42);
   const t3 = tier(596, 394 - 170 - 2 * S * 18, 70, 24);
 
   return (
-    <div
-      aria-hidden
-      className="pointer-events-none absolute top-28 right-0 bottom-0 flex w-[62%] items-end justify-end max-md:w-full max-md:opacity-35"
-    >
+    <div aria-hidden className={`pointer-events-none ${className}`}>
       <div className="bg-brand/10 absolute right-[-10%] bottom-[-12%] aspect-square w-[70%] rounded-full" />
       <svg
         viewBox="120 -24 560 444"

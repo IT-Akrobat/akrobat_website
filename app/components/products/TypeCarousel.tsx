@@ -10,11 +10,12 @@ export type TypeItem = { href: string; title: string; slotId: string };
 
 /* A ring of cards. The front card is big, its neighbours are turned toward
    it on both sides, and the whole ring turns round. It advances by itself
-   every `seconds` (default 40); hover pauses it. Swipe / drag, arrows,
+   every `seconds` (default 10). It keeps turning even while the
+   pointer is over it; only an active drag pauses it. Swipe / drag, arrows,
    dots, or a click on a side card turn it by hand. */
 export default function TypeCarousel({
   items,
-  seconds = 40,
+  seconds = 10,
 }: {
   items: TypeItem[];
   seconds?: number;
@@ -48,10 +49,12 @@ export default function TypeCarousel({
 
   const down = (e: PointerEvent<HTMLDivElement>) => {
     drag.current = { x: e.clientX };
+    setHold(true);
   };
   const up = (e: PointerEvent<HTMLDivElement>) => {
     const s = drag.current;
     drag.current = null;
+    setHold(false);
     if (!s) return;
     const dx = e.clientX - s.x;
     if (Math.abs(dx) > 40) {
@@ -72,16 +75,15 @@ export default function TypeCarousel({
   };
 
   return (
-    <div
-      className="type-ring mt-10"
-      onMouseEnter={() => setHold(true)}
-      onMouseLeave={() => setHold(false)}
-    >
+    <div className="type-ring mt-10">
       <div
         className="type-stage"
         onPointerDown={down}
         onPointerUp={up}
-        onPointerCancel={() => (drag.current = null)}
+        onPointerCancel={() => {
+          drag.current = null;
+          setHold(false);
+        }}
       >
         {items.map((it, k) => {
           const d = dist(k, i);

@@ -5,6 +5,7 @@ import { type ReactNode, useEffect, useRef, useState } from 'react';
 const hidden = {
   up: 'translate-y-[90px]',
   left: '-translate-x-[120px]',
+  right: 'translate-x-[120px]',
 } as const;
 
 /* Slides its children into place the first time they scroll into view. */
