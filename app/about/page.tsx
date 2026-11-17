@@ -53,13 +53,6 @@ const promise = [
   ],
 ];
 
-const accreditations = [
-  ['/pdf/bizsafe.jpg', 'bizSAFE Star'],
-  ['/pdf/iso9001.jpg', 'ISO 9001'],
-  ['/pdf/iso45001.jpg', 'ISO 45001'],
-  ['/pdf/smf.jpg', 'Singapore Manufacturing Federation'],
-];
-
 const pin = (
   <svg
     viewBox="0 0 24 24"
@@ -307,28 +300,6 @@ export default function About() {
             ))}
           </ul>
         </InView>
-      </section>
-
-      {/* ---------- Accreditations ---------- */}
-      <section className="border-line border-y bg-white">
-        <div className="mx-auto flex max-w-[1240px] flex-col gap-8 px-[22px] py-14 md:flex-row md:items-center md:justify-between">
-          <p className="text-navy max-w-[300px] text-xl leading-snug font-extrabold">
-            Certified for quality and safety management
-          </p>
-          <ul className="flex flex-wrap items-center gap-x-10 gap-y-6">
-            {accreditations.map(([src, alt]) => (
-              <li key={src}>
-                <Image
-                  src={src}
-                  alt={alt}
-                  width={160}
-                  height={80}
-                  className="h-16 w-auto object-contain"
-                />
-              </li>
-            ))}
-          </ul>
-        </div>
       </section>
 
       {/* ---------- Visit / contact ---------- */}

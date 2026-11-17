@@ -197,7 +197,7 @@ export default function Home() {
             {news.slice(0, 3).map((n) => (
               <Link
                 key={n.href}
-                href={n.href}
+                href="/promotions-news"
                 className="border-line hover:border-brand rounded-3xl border bg-white p-7 transition hover:-translate-y-1 hover:shadow-[0_16px_36px_rgba(11,31,69,.12)]"
               >
                 <p className="text-brand-dark text-xs font-bold tracking-[0.18em] uppercase">
@@ -208,7 +208,7 @@ export default function Home() {
                   {n.summary}
                 </p>
                 <span className="text-brand-dark mt-5 inline-block text-sm font-bold">
-                  Read more →
+                  View all news →
                 </span>
               </Link>
             ))}

@@ -4,7 +4,7 @@ import { Suspense } from 'react';
 
 import { company, products, solutions } from '@/app/lib/nav-data';
 
-import FooterCta from './FooterCta';
+// import FooterCta from './FooterCta';
 
 const companyLinks = [
   { label: 'About', href: '/about' },
@@ -50,9 +50,7 @@ export default function Footer() {
     <footer className="bg-[#08183a] text-white">
       <div className="mx-auto max-w-[1240px] px-[22px] pt-16">
         {/* Call-to-action (hidden on the Contact Us page) */}
-        <Suspense fallback={null}>
-          <FooterCta />
-        </Suspense>
+        <Suspense fallback={null}>{/* <FooterCta /> */}</Suspense>
 
         {/* Columns */}
         <div className="grid gap-12 py-16 sm:grid-cols-2 lg:grid-cols-[1.3fr_1fr_1fr_1.2fr]">
