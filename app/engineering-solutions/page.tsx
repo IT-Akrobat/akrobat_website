@@ -1,5 +1,4 @@
 import type { Metadata } from 'next';
-import Image from 'next/image';
 import Link from 'next/link';
 
 import ImageSlot from '@/app/components/products/ImageSlot';
@@ -322,7 +321,7 @@ export default function EngineeringSolutions() {
       </section>
 
       {/* ---------- Accreditations ---------- */}
-      <section className="bg-white">
+      {/* <section className="bg-white">
         <div className="mx-auto flex max-w-[1240px] flex-col gap-8 px-[22px] py-14 md:flex-row md:items-center md:justify-between">
           <p className="text-navy max-w-[300px] text-xl leading-snug font-extrabold">
             Certified for quality and safety management
@@ -341,7 +340,7 @@ export default function EngineeringSolutions() {
             ))}
           </ul>
         </div>
-      </section>
+      </section> */}
 
       {/* ---------- CTA ---------- */}
       <section className="bg-[#fdf3e6]">

@@ -140,35 +140,7 @@ export const solutions: NavLeaf[] = [
 ];
 
 export const projects: NavItem[] = [
-  {
-    label: 'Singapore',
-    href: '/projects/singapore-projects',
-    children: [
-      {
-        label: 'Entertainment',
-        href: '/projects/singapore-projects/entertainment',
-      },
-      { label: 'Government', href: '/projects/singapore-projects/government' },
-      { label: 'Factories', href: '/projects/singapore-projects/factories' },
-      {
-        label: 'Oil Offshore',
-        href: '/projects/singapore-projects/oil-offshore',
-      },
-      { label: 'Schools', href: '/projects/singapore-projects/schools' },
-      {
-        label: 'Condominium / Hotel',
-        href: '/projects/singapore-projects/condominium-hotel',
-      },
-      {
-        label: 'Shopping Center / Offices',
-        href: '/projects/singapore-projects/shopping-center-offices',
-      },
-      {
-        label: 'Rope Access Works',
-        href: '/engineering-solutions/rope-access-works-2',
-      },
-    ],
-  },
+  { label: 'Singapore', href: '/projects' },
   { label: 'International', href: '/projects/international' },
 ];
 

@@ -15,6 +15,9 @@ const nodeY = (k: number) => 30 + (2 - Math.min(Math.abs(k), 3)) * 46; // V: cen
 const SCALE = [1.5, 0.82, 0.62, 0.5]; // centre card is the hero
 const FADE = [1, 0.85, 0.5, 0];
 const mod = (n: number, m: number) => ((n % m) + m) % m;
+/* Pictures for a sector: its own `images`, else every photo from its sites. */
+const sectorImages = (x: Sector) =>
+  x.images ?? [...new Set(x.sites?.flatMap((st) => st.images) ?? [])];
 const LEAVE_MS = 280;
 
 const css = `
@@ -35,6 +38,8 @@ export default function ProjectsExplorer({ sectors }: { sectors: Sector[] }) {
   const [leaving, setLeaving] = useState(false);
   const [cur, setCur] = useState(0); // absolute picture position, keeps growing
   const [paused, setPaused] = useState(false);
+  const [hov, setHov] = useState<number | null>(null); // hovered picture
+  const [zoom, setZoom] = useState<number | null>(null); // picture in the popup
   const timer = useRef<ReturnType<typeof setTimeout>>(undefined);
   const detail = useRef<HTMLDivElement>(null);
 
@@ -42,10 +47,10 @@ export default function ProjectsExplorer({ sectors }: { sectors: Sector[] }) {
 
   // advance to the next picture every 10 s; any manual move restarts the clock
   useEffect(() => {
-    if (paused || leaving) return;
+    if (paused || leaving || zoom !== null) return;
     const t = setTimeout(() => setCur((c) => c + 1), AUTO_MS);
     return () => clearTimeout(t);
-  }, [cur, shown, paused, leaving]);
+  }, [cur, shown, paused, leaving, zoom]);
 
   function pick(id: string) {
     setActive(id);
@@ -61,8 +66,30 @@ export default function ProjectsExplorer({ sectors }: { sectors: Sector[] }) {
   }
 
   const s = sectors.find((x) => x.id === shown) ?? sectors[0];
-  const N = Math.max(5, s.images?.length ?? 0);
-  const pic = (i: number) => s.images?.[mod(i, N)];
+  const imgs = sectorImages(s);
+  const N = imgs.length || 5;
+  const pic = (i: number) =>
+    imgs.length ? imgs[mod(i, imgs.length)] : undefined;
+
+  // popup: Esc closes, arrows move, page does not scroll behind it
+  useEffect(() => {
+    if (zoom === null) return;
+    const onKey = (e: KeyboardEvent) => {
+      if (e.key === 'Escape') {
+        setCur(zoom);
+        setZoom(null);
+      }
+      if (e.key === 'ArrowRight') setZoom((z) => (z === null ? z : z + 1));
+      if (e.key === 'ArrowLeft') setZoom((z) => (z === null ? z : z - 1));
+    };
+    const prev = document.body.style.overflow;
+    document.body.style.overflow = 'hidden';
+    window.addEventListener('keydown', onKey);
+    return () => {
+      document.body.style.overflow = prev;
+      window.removeEventListener('keydown', onKey);
+    };
+  }, [zoom]);
 
   return (
     <>
@@ -115,10 +142,10 @@ export default function ProjectsExplorer({ sectors }: { sectors: Sector[] }) {
                         <span
                           className={`block aspect-[3/4] w-full max-w-[132px] overflow-hidden rounded-[10px] border transition-colors ${on ? 'border-brand border-2' : 'group-hover:border-brand border-white/40'}`}
                         >
-                          {x.images?.[0] || x.image ? (
+                          {sectorImages(x)[0] || x.image ? (
                             // eslint-disable-next-line @next/next/no-img-element
                             <img
-                              src={x.images?.[0] ?? x.image}
+                              src={sectorImages(x)[0] ?? x.image}
                               alt=""
                               className="size-full object-cover"
                             />
@@ -176,12 +203,14 @@ export default function ProjectsExplorer({ sectors }: { sectors: Sector[] }) {
                     ))}
                   </ul>
                 )}
-                <Link
-                  href={sectorHref(s)}
-                  className="bg-navy hover:bg-brand mt-7 inline-block rounded-full px-6 py-3 text-[15px] font-bold text-white transition-colors"
-                >
-                  See {s.label} projects
-                </Link>
+                {s.region === 'International' && (
+                  <Link
+                    href={sectorHref(s)}
+                    className="bg-navy hover:bg-brand mt-7 inline-block rounded-full px-6 py-3 text-[15px] font-bold text-white transition-colors"
+                  >
+                    See {s.label} projects
+                  </Link>
+                )}
               </div>
 
               {/* V-shaped rope: the centre picture hangs lowest, neighbours rise on both sides */}
@@ -220,6 +249,8 @@ export default function ProjectsExplorer({ sectors }: { sectors: Sector[] }) {
                       <div
                         key={idx}
                         className="vcard absolute"
+                        onMouseEnter={() => setHov(idx)}
+                        onMouseLeave={() => setHov(null)}
                         style={{
                           left: `${50 + SPREAD * k}%`,
                           top: nodeY(k),
@@ -227,7 +258,7 @@ export default function ProjectsExplorer({ sectors }: { sectors: Sector[] }) {
                           transform: `translateX(-50%) scale(${SCALE[a]})`,
                           transformOrigin: 'top center',
                           opacity: FADE[a],
-                          zIndex: 10 - a,
+                          zIndex: hov === idx ? 20 : 10 - a,
                           pointerEvents: a === 3 ? 'none' : 'auto',
                         }}
                       >
@@ -241,7 +272,7 @@ export default function ProjectsExplorer({ sectors }: { sectors: Sector[] }) {
                             className="bg-brand block h-[18px] w-0.5"
                           />
                           <button
-                            onClick={() => setCur(idx)}
+                            onClick={() => (src ? setZoom(idx) : setCur(idx))}
                             aria-label={
                               k === 0
                                 ? `Picture ${mod(idx, N) + 1} of ${N}, showing`
@@ -249,7 +280,16 @@ export default function ProjectsExplorer({ sectors }: { sectors: Sector[] }) {
                             }
                             aria-current={k === 0 ? 'true' : undefined}
                             tabIndex={a > 2 ? -1 : 0}
-                            className={`focus-visible:outline-brand block w-full cursor-pointer overflow-hidden rounded-[14px] border shadow-[0_24px_50px_rgba(11,31,69,.28)] focus-visible:outline-2 focus-visible:outline-offset-4 ${k === 0 ? 'border-brand border-[3px]' : 'border-navy/20'}`}
+                            style={{
+                              transform: hov === idx ? 'scale(1.14)' : 'none',
+                              transition:
+                                'transform .45s cubic-bezier(.22,.8,.25,1), box-shadow .45s',
+                              boxShadow:
+                                hov === idx
+                                  ? '0 36px 70px rgba(11,31,69,.42)'
+                                  : undefined,
+                            }}
+                            className={`focus-visible:outline-brand block w-full overflow-hidden rounded-[14px] border shadow-[0_24px_50px_rgba(11,31,69,.28)] focus-visible:outline-2 focus-visible:outline-offset-4 ${src ? 'cursor-zoom-in' : 'cursor-pointer'} ${k === 0 ? 'border-brand border-[3px]' : 'border-navy/20'}`}
                           >
                             {src ? (
                               // eslint-disable-next-line @next/next/no-img-element
@@ -315,6 +355,53 @@ export default function ProjectsExplorer({ sectors }: { sectors: Sector[] }) {
           </div>
         </div>
       </section>
+
+      {/* ---------- popup: picture on its own ---------- */}
+      {zoom !== null && pic(zoom) && (
+        <div
+          role="dialog"
+          aria-modal="true"
+          aria-label={`${s.label} picture ${mod(zoom, imgs.length) + 1} of ${imgs.length}`}
+          className="bg-navy/95 fixed inset-0 z-[100] grid place-items-center p-4 backdrop-blur-sm"
+          onClick={() => {
+            setCur(zoom);
+            setZoom(null);
+          }}
+        >
+          {/* eslint-disable-next-line @next/next/no-img-element */}
+          <img
+            key={zoom}
+            src={pic(zoom)}
+            alt={`${s.label} project`}
+            referrerPolicy="no-referrer"
+            onClick={(e) => e.stopPropagation()}
+            className="max-h-[88vh] max-w-full rounded-2xl object-contain shadow-2xl"
+            style={{ animation: 'fade-up .5s cubic-bezier(.22,.8,.25,1) both' }}
+          />
+          <button
+            type="button"
+            aria-label="Close"
+            className="hover:bg-brand absolute top-5 right-5 grid size-11 place-items-center rounded-full bg-white/15 text-2xl text-white"
+          >
+            ×
+          </button>
+          {imgs.length > 1 &&
+            [-1, 1].map((d) => (
+              <button
+                key={d}
+                type="button"
+                aria-label={d < 0 ? 'Previous picture' : 'Next picture'}
+                onClick={(e) => {
+                  e.stopPropagation();
+                  setZoom(zoom + d);
+                }}
+                className={`hover:bg-brand absolute grid size-12 place-items-center rounded-full bg-white/15 text-2xl text-white ${d < 0 ? 'left-4' : 'right-4'}`}
+              >
+                {d < 0 ? '‹' : '›'}
+              </button>
+            ))}
+        </div>
+      )}
     </>
   );
 }
